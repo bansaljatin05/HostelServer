@@ -3,9 +3,17 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var FileStore = require('session-file-store')(session);
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var studentRouter = require('./routes/studentRouter');
+var employeeRouter = require('./routes/employeeRouter');
+
+const connect = mongoose.connect("mongodb://localhost:27017/hostelDB", {useNewUrlParser: true});
+connect.then((db) => {
+  console.log('Connected correctly to server');
+}, (err) => { console.log(err) });
 
 var app = express();
 
@@ -21,6 +29,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/students', studentRouter);
+app.use('/employees', employeeRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

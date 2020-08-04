@@ -7,7 +7,12 @@ router.use(bodyParser.json());
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+  User.find({})
+    .then((employees) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json(employees);
+    }, (err) => next(err))
 });
 
 router.post('/login', (req, res, next) => {

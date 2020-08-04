@@ -25,12 +25,10 @@ employeeRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err))
 }) 
-
 .put((req, res, next) => {
     res.statusCode = 403;
     res.end('PUT operation not supported on /employees');
 }) 
-
 .delete((req, res, next) => {
     res.end('deleting the employee')
 }) 

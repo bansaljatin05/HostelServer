@@ -33,6 +33,9 @@ app.use(session({
   resave: false,
   store: new FileStore()
 }));
+
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
 //app.use(cookieParser());
 function auth (req, res, next) {
   console.log(req.session);
@@ -53,11 +56,9 @@ function auth (req, res, next) {
     }
   }
 }
-
+app.use(auth);
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/students', studentRouter);
 app.use('/employees', employeeRouter);
 

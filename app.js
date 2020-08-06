@@ -11,6 +11,8 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var studentRouter = require('./routes/studentRouter');
 var employeeRouter = require('./routes/employeeRouter');
+var mealsRouter = require('./routes/mealsRouter');
+var seatsRouter = require('./routes/seatsRouter');
 
 const connect = mongoose.connect("mongodb://localhost:27017/hostelDB", {useNewUrlParser: true});
 connect.then((db) => {
@@ -61,6 +63,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/students', studentRouter);
 app.use('/employees', employeeRouter);
+app.use('/meals', mealsRouter);
+app.use('/seats', seatsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

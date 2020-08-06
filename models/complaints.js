@@ -19,6 +19,6 @@ const complaintSchema = new mongoose.Schema({
     }
 });
 
-const Complaints = mongoose.model("Compliant", complaintSchema);
+const Complaints = mongoose.model("Complaint", complaintSchema);
 
 module.exports = Complaints

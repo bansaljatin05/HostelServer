@@ -11,8 +11,10 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var studentRouter = require('./routes/studentRouter');
 var employeeRouter = require('./routes/employeeRouter');
+var noticeRouter = require('./routes/noticeRouter');
+var architectureRouter = require('./routes/architectureRouter')
 
-const connect = mongoose.connect("mongodb://localhost:27017/hostelDB", {useNewUrlParser: true});
+const connect = mongoose.connect("mongodb://localhost:27017/hostelDB", {useNewUrlParser: true, useUnifiedTopology: true });
 connect.then((db) => {
   console.log('Connected correctly to server');
 }, (err) => { console.log(err) });
@@ -60,6 +62,8 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/students', studentRouter);
 app.use('/employees', employeeRouter);
+app.use('/notices', noticeRouter);
+app.use('./architecture', architectureRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -19,13 +19,23 @@ employeeRouter.route('/')
     .catch((err) => next(err))
 }) 
 .post((req, res, next) => {
-    Employees.create(req.body)
-    .then((employee) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json(employee)
-    }, (err) => next(err))
-    .catch((err) => next(err))
+    const user = req.user.admin;
+    User.findOne({username: user})
+    .then((user) => {
+        if(user.admin) {
+            Employees.create(req.body)
+            .then((employee) => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(employee)
+            }, (err) => next(err))
+            .catch((err) => next(err))
+        } else {
+            const err = new Error("You are not authenticated to perform this operation");
+            err.status = 404;
+            return(next(err));
+        }
+    }) 
 }) 
 .put((req, res, next) => {
     res.statusCode = 403;

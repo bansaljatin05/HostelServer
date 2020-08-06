@@ -27,13 +27,23 @@ studentRouter.route('/')
 }) 
 
 .post((req, res, next) => {
-    Students.create(req.body)
-    .then((students) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json(students)
-    }, (err) => next(err))
-    .catch((err) => next(err))
+    const user = req.body.username;
+    User.findOne({username: user})
+    .then((user) => {
+        if(user.admin) {
+            Students.create(req.body)
+            .then((students) => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(students)
+            }, (err) => next(err))
+            .catch((err) => next(err))
+        } else {
+            const err = new Error("You are not authenticated to perform this operation");
+            err.status = 404;
+            return(next(err));
+        }
+    })
 }) 
 
 .delete((req, res, next) => {

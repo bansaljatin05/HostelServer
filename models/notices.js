@@ -12,7 +12,11 @@ const noticeSchema = new mongoose.Schema({
     date: {
         type: Date, 
         required: true 
-    }
+    },
+    hostel: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
 });
 
 const Notices = mongoose.model("Notice", noticeSchema);

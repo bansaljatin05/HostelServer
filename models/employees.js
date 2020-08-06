@@ -40,6 +40,10 @@ const employeeSchema = new Schema({
         unique: true, 
         required: true 
     },
+    hostel: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     photo: Buffer
 });
 

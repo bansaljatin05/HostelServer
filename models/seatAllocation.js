@@ -16,8 +16,12 @@ const seatAllcationSchema = new mongoose.Schema({
     monthlyRent: {
         type: String, 
         required: true 
-    }
+    },
+    hostel: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
 });
 
-const SeatAllocations = mongoose.model("SeatAllocation", seatAllcationSchema);
-module.exports = SeatAllocations
+const Seat = mongoose.model("SeatAllocation", seatAllcationSchema);
+module.exports = Seat

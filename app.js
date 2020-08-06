@@ -13,6 +13,8 @@ var studentRouter = require('./routes/studentRouter');
 var employeeRouter = require('./routes/employeeRouter');
 var noticeRouter = require('./routes/noticeRouter');
 var architectureRouter = require('./routes/architectureRouter')
+var mealsRouter = require('./routes/mealsRouter');
+var seatsRouter = require('./routes/seatsRouter');
 
 const connect = mongoose.connect("mongodb://localhost:27017/hostelDB", {useNewUrlParser: true, useUnifiedTopology: true });
 connect.then((db) => {
@@ -35,6 +37,9 @@ app.use(session({
   resave: false,
   store: new FileStore()
 }));
+
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
 //app.use(cookieParser());
 function auth (req, res, next) {
   console.log(req.session);
@@ -55,15 +60,15 @@ function auth (req, res, next) {
     }
   }
 }
-
+app.use(auth);
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/students', studentRouter);
 app.use('/employees', employeeRouter);
 app.use('/notices', noticeRouter);
 app.use('./architecture', architectureRouter);
+app.use('/meals', mealsRouter);
+app.use('/seats', seatsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

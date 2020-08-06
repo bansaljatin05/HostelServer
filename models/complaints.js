@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 
 const complaintSchema = new mongoose.Schema({
     studentName: {
-        type: String, 
-        required: true 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User'
     },
     roomNo: {
-        type: String, 
-        required: true 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Seat' 
     },
     title: {
         type: String, 
@@ -16,7 +16,7 @@ const complaintSchema = new mongoose.Schema({
     complaint: {
         type: String, 
         required: true 
-    }
+    },
 });
 
 const Complaints = mongoose.model("Complaint", complaintSchema);

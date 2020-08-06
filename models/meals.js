@@ -12,7 +12,11 @@ const mealSchema = new mongoose.Schema({
     itemName: {
         type: String,
         required: true
-    }
+    },
+    hostel: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
 });
 
 const Meals = mongoose.model("Meal", mealSchema);

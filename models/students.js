@@ -58,8 +58,16 @@ const studentSchema = new Schema({
     },
     photo: {
         type: String,
-        require: true
-    } 
+        required: true
+    },
+    roomNo: {
+        type: String,
+        required: true
+    },
+    hostel: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
 });
 
 const Students = mongoose.model("Student", studentSchema);

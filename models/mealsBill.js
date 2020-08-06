@@ -21,9 +21,13 @@ const messBillSchema = new mongoose.Schema({
     paymentDate: {
         type: Date, 
         required: true 
-    }
+    },
+    hostel: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
 });
 
-const MessBills = mongoose.model("MessBill", messBillSchema);
+const Meals = mongoose.model("MessBill", messBillSchema);
 
-module.exports = MessBills
+module.exports = Meals

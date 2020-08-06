@@ -13,6 +13,10 @@ const architectureSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    hostel: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
 },{
     type: String,
     required: true

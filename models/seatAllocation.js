@@ -19,5 +19,5 @@ const seatAllcationSchema = new mongoose.Schema({
     }
 });
 
-const SeatAllocations = mongoose.model("SeatAllocation", seatAllcationSchema);
-module.exports = SeatAllocations
+const Seat = mongoose.model("SeatAllocation", seatAllcationSchema);
+module.exports = Seat

@@ -12,7 +12,11 @@ const salarySchema = new mongoose.Schema({
     salary: {
         type: String, 
         required: true 
-    }
+    },
+    hostel: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
 });
 
 const Salary = mongoose.model("Salary", salarySchema);

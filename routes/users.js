@@ -23,10 +23,9 @@ router.post('/signup', function(req, res, next) {
       err.status = 403;
       next(err);
     } else {
-      return User.create({
-        username: req.body.username,
-        password: req.body.password
-      })
+      return User.create(
+        req.body
+      )
     }
   })
   .then((user) => {

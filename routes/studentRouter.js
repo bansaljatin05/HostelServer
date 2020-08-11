@@ -14,10 +14,14 @@ studentRouter.route('/')
 
 .get((req, res, next) => {
     Students.find({})
+    .populate('hostel')
     .then((students) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json')
-        res.json(students);
+        students.find({hostel: req.user.hostel})
+        .then((students) => {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json')
+            res.json(students);
+        })
     }, err => next(err))
     .catch(err => next(err))
 }) 
@@ -27,15 +31,21 @@ studentRouter.route('/')
 }) 
 
 .post((req, res, next) => {
+    console.log(req);
     const user = req.body.username;
     User.findOne({username: user})
     .then((user) => {
         if(user.admin) {
+            req.body.hostel = req.user._id
             Students.create(req.body)
-            .then((students) => {
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(students)
+            .then((student) => {
+                Students.findById(student._id)
+                .populate('hostel')
+                .then((student) => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(student)
+                }, err => next(err))
             }, (err) => next(err))
             .catch((err) => next(err))
         } else {
@@ -43,7 +53,8 @@ studentRouter.route('/')
             err.status = 404;
             return(next(err));
         }
-    })
+    }, err => next(err))
+    .catch(err => next(err))
 }) 
 
 .delete((req, res, next) => {

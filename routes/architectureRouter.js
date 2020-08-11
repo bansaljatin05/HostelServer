@@ -8,7 +8,8 @@ const Architectures = require('../models/architecture')
 
 architectureRouter.route('/')
 .get((req, res, next) => {
-    Architectures.find({})
+    Architectures.findOne({hostel: req.user.hostel})
+    .populate('hostel')
     .then((architecture) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -17,11 +18,16 @@ architectureRouter.route('/')
     .catch((err) => next(err))
 })
 .post((req, res, next) => {
+    req.body.hostel = req.user.hostel;
     Architectures.create(req.body)
     .then((architecture) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json(architecture)
+        Architectures.findById(architecture._id)
+        .populate('hostel')
+        .then((architecture) => {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json(architecture)
+        }, err => next(err))  
     }, (err) => next(err))
     .catch((err) => next(err))
 }) 

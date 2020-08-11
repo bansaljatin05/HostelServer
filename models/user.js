@@ -16,8 +16,8 @@ var User = new Schema({
         default: false
     },
     hostel: {
-        type: String,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Hostels'
     },
 });
 

@@ -13,7 +13,7 @@ mealsRouter.route('/')
 })
 
 .get((req, res, next) => {
-    Meals.find({})
+    Meals.findOne({hostel: req.user.hostel})
     .then((meals) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json')
@@ -27,46 +27,26 @@ mealsRouter.route('/')
 }) 
 
 .post((req, res, next) => {
-    const user = req.body.username;
-    User.findOne({username: user})
-    .then((user) => {
-    if(user.admin){
+    req.body.hostel = req.user.hostel;
     Meals.create(req.body)
     .then((meals) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json(meals)
-    }, (err) => next(err))
-    .catch((err) => next(err))}
-    
-    else {
-        const err = new Error("You are not authenticated to perform this operation");
-        err.status = 404;
-        return(next(err));
-    }
+        Meals.findById(meals._id)
+        .populate(hostel)
+        .then((meals) => {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json')
+            res.json(meals);
+        })
     }, (err) => next(err))
     .catch((err) => next(err))
-
-    
 }) 
 .delete((req, res, next) => {
-    const user = req.body.username;
-    User.findOne({username: user})
-    .then((user) => {
-        if(user.admin) {
-            Meals.deleteMany({})
-            .then((response) => {
-                res.statusCode = 200;
-                res.setHeader('Content-type', 'application/json');
-                res.json(response);
-            }, (err) => next(err))
-        } else {
-            const err = new Error("You are not authenticated to perform this operation");
-            err.status = 404;
-            return(next(err));
-        }
+    Meals.deleteMany({hostel: req.user.hostel})
+    .then((response) => {
+        res.statusCode = 200;
+        res.setHeader('Content-type', 'application/json');
+        res.json(response);
     }, (err) => next(err))
-    .catch((err) => next(err))
 })
 
 module.exports=mealsRouter;

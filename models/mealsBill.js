@@ -24,7 +24,7 @@ const messBillSchema = new mongoose.Schema({
     },
     hostel: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'Hostels'
     },
 });
 

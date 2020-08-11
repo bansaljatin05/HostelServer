@@ -13,7 +13,8 @@ seatRouter.route('/')
 })
 
 .get((req, res, next) => {
-    Seat.find({})
+    Seat.find({hostel: req.user.hostel})
+    .populate('hostel')
     .then((seat) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json')
@@ -27,46 +28,26 @@ seatRouter.route('/')
 }) 
 
 .post((req, res, next) => {
-    const user = req.body.username;
-    User.findOne({username: user})
-    .then((user) => {
-    if(user.admin){
+    req.body.hostel = req.user.hostel;
     Seat.create(req.body)
     .then((seat) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json(seat)
-    }, (err) => next(err))
-    .catch((err) => next(err))}
-    
-    else {
-        const err = new Error("You are not authenticated to perform this operation");
-        err.status = 404;
-        return(next(err));
-    }
+        Seat.findById(seat._id)
+        .populate('hostel')
+        .then((seat) => {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json(seat);
+        }, err => next(err))
     }, (err) => next(err))
     .catch((err) => next(err))
-
-    
 }) 
 .delete((req, res, next) => {
-    const user = req.body.username;
-    User.findOne({username: user})
-    .then((user) => {
-        if(user.admin) {
-            Seat.deleteMany({})
-            .then((response) => {
-                res.statusCode = 200;
-                res.setHeader('Content-type', 'application/json');
-                res.json(response);
-            }, (err) => next(err))
-        } else {
-            const err = new Error("You are not authenticated to perform this operation");
-            err.status = 404;
-            return(next(err));
-        }
+    Seat.deleteMany({hostel: req.user.hostel})
+    .then((response) => {
+        res.statusCode = 200;
+        res.setHeader('Content-type', 'application/json');
+        res.json(response);
     }, (err) => next(err))
-    .catch((err) => next(err))
 })
 
 seatRouter.route('/:seatId')
@@ -86,56 +67,33 @@ seatRouter.route('/:seatId')
     .catch(err => next(err));  
 }) 
 .put((req, res, next) => {
-    const user = req.body.username;
-    User.findOne({username: user})
-    .then((user) => {
-        if(user.admin) {
-            Seat.findById(req.params.seatId)
-            .then((seat) => {
-                if(seat != null) {
-                    seat.findByIdAndUpdate(req.params.seatId,{ 
-                        $set: req.body
-                    }, { new: true })
-                    .then((newseat) => {
-                        seat.findById(newseat._id)
-                        .then((se) => {
-                            res.statusCode = 200;
-                            res.setHeader('Content-type', 'application/json');
-                            res.json(se);
-                        }, err => next(err))
-                    }, err => next(err))
-                }
+    Seat.findById(req.params.seatId)
+    .then((seat) => {
+        if(seat != null) {
+            seat.findByIdAndUpdate(req.params.seatId,{ 
+                $set: req.body
+            }, { new: true })
+            .then((newseat) => {
+                seat.findById(newseat._id)
+                .then((se) => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-type', 'application/json');
+                    res.json(se);
+                }, err => next(err))
             }, err => next(err))
-        } else {
-            const err = new Error("You are not authenticated to perform this operation");
-            err.status = 404;
-            return(next(err));
         }
     }, err => next(err))
-    .catch(err => next(err))
 })
 .post((req, res, next) => {
     res.end('Post operation not available')
 })
 .delete((req, res, next) => {
-    const user = req.body.username;
-    User.findOne({username: user})
-    .then((user) => {
-        if(user.admin) {
-            Seat.findByIdAndDelete(seatId)
-            .then((response) => {
-                res.statusCode = 200;
-                res.setHeader('Content-type', 'application/json');
-                res.json(response);
-            }, err => next(err))
-        }
-        else {
-            const err = new Error("You are not authorized");
-            err.status = 404;
-            return(next(err));
-        }
+    Seat.findByIdAndDelete(seatId)
+    .then((response) => {
+        res.statusCode = 200;
+        res.setHeader('Content-type', 'application/json');
+        res.json(response);
     }, err => next(err))
-    .catch(err => next(err))
 })
 
 module.exports = seatRouter;

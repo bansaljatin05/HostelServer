@@ -13,7 +13,7 @@ studentRouter.route('/')
 })
 
 .get((req, res, next) => {
-    Students.find({})
+    Students.find({hostel: req.user.hostel})
     .populate('hostel')
     .then((students) => {
         students.find({hostel: req.user.hostel})
@@ -31,48 +31,26 @@ studentRouter.route('/')
 }) 
 
 .post((req, res, next) => {
-    console.log(req);
-    const user = req.body.username;
-    User.findOne({username: user})
-    .then((user) => {
-        if(user.admin) {
-            req.body.hostel = req.user._id
-            Students.create(req.body)
-            .then((student) => {
-                Students.findById(student._id)
-                .populate('hostel')
-                .then((student) => {
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json(student)
-                }, err => next(err))
-            }, (err) => next(err))
-            .catch((err) => next(err))
-        } else {
-            const err = new Error("You are not authenticated to perform this operation");
-            err.status = 404;
-            return(next(err));
-        }
-    }, err => next(err))
-    .catch(err => next(err))
+    req.body.hostel = req.user.hostel;
+    Students.create(req.body)
+    .then((student) => {
+        Students.findById(student._id)
+        .populate('hostel')
+        .then((student) => {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json(student)
+        }, err => next(err))
+    }, (err) => next(err))
+    .catch((err) => next(err))
 }) 
 
 .delete((req, res, next) => {
-    const user = req.body.username;
-    User.findOne({username: user})
-    .then((user) => {
-        if(user.admin) {
-            Students.deleteMany({})
-            .then((response) => {
-                res.statusCode = 200;
-                res.setHeader('Content-type', 'application/json');
-                res.json(response);
-            }, (err) => next(err))
-        } else {
-            const err = new Error("You are not authenticated to perform this operation");
-            err.status = 404;
-            return(next(err));
-        }
+    Students.deleteMany({hostel: req.user.hostel})
+    .then((response) => {
+        res.statusCode = 200;
+        res.setHeader('Content-type', 'application/json');
+        res.json(response);
     }, (err) => next(err))
     .catch((err) => next(err))
 }) 
@@ -94,56 +72,33 @@ studentRouter.route('/:studentId')
     .catch(err => next(err));  
 }) 
 .put((req, res, next) => {
-    const user = req.body.username;
-    User.findOne({username: user})
-    .then((user) => {
-        if(user.admin) {
-            Students.findById(req.params.studentId)
-            .then((student) => {
-                if(student != null) {
-                    Students.findByIdAndUpdate(req.params.studentId,{ 
-                        $set: req.body
-                    }, { new: true })
-                    .then((newStudent) => {
-                        Students.findById(newStudent._id)
-                        .then((stu) => {
-                            res.statusCode = 200;
-                            res.setHeader('Content-type', 'application/json');
-                            res.json(stu);
-                        }, err => next(err))
-                    }, err => next(err))
-                }
+    Students.findById(req.params.studentId)
+    .then((student) => {
+        if(student != null) {
+            Students.findByIdAndUpdate(req.params.studentId,{ 
+                $set: req.body
+            }, { new: true })
+            .then((newStudent) => {
+                Students.findById(newStudent._id)
+                .then((stu) => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-type', 'application/json');
+                    res.json(stu);
+                }, err => next(err))
             }, err => next(err))
-        } else {
-            const err = new Error("You are not authenticated to perform this operation");
-            err.status = 404;
-            return(next(err));
         }
     }, err => next(err))
-    .catch(err => next(err))
 })
 .post((req, res, next) => {
     res.end('Post operation not available')
 })
 .delete((req, res, next) => {
-    const user = req.body.username;
-    User.findOne({username: user})
-    .then((user) => {
-        if(user.admin) {
-            Students.findByIdAndDelete(studentId)
-            .then((response) => {
-                res.statusCode = 200;
-                res.setHeader('Content-type', 'application/json');
-                res.json(response);
-            }, err => next(err))
-        }
-        else {
-            const err = new Error("You are not authorized");
-            err.status = 404;
-            return(next(err));
-        }
+    Students.findByIdAndDelete(studentId)
+    .then((response) => {
+        res.statusCode = 200;
+        res.setHeader('Content-type', 'application/json');
+        res.json(response);
     }, err => next(err))
-    .catch(err => next(err))
 })
 
 module.exports = studentRouter;

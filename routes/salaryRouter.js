@@ -8,7 +8,7 @@ const Salaries = require('../models/notices')
 
 salaryRouter.route('/')
 .get((req, res, next) => {
-    Salaries.find({})
+    Salaries.find({hostel: req.user.hostel})
     .then((salaries) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');

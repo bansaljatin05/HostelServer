@@ -13,7 +13,8 @@ mealsBillRouter.route('/')
 })
 
 .get((req, res, next) => {
-    MealsBill.find({})
+    MealsBill.findOne({hostel: req.user.hostel})
+    .populate('hostel')
     .then((mealsBill) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json')
@@ -27,48 +28,32 @@ mealsBillRouter.route('/')
 }) 
 
 .post((req, res, next) => {
-    const user = req.body.username;
-    User.findOne({username: user})
-    .then((user) => {
-        if(user.admin) {
-            MealsBill.create(req.body)
-            .then((mealsBill) => {
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(mealsBill)
-            }, (err) => next(err))
-            .catch((err) => next(err))
-        } else {
-            const err = new Error("You are not authenticated to perform this operation");
-            err.status = 404;
-            return(next(err));
-        }
-    })
-}) 
-
-.delete((req, res, next) => {
-    const user = req.body.username;
-    User.findOne({username: user})
-    .then((user) => {
-        if(user.admin) {
-            MealsBill.deleteMany({})
-            .then((response) => {
-                res.statusCode = 200;
-                res.setHeader('Content-type', 'application/json');
-                res.json(response);
-            }, (err) => next(err))
-        } else {
-            const err = new Error("You are not authenticated to perform this operation");
-            err.status = 404;
-            return(next(err));
-        }
+    req.body.hostel = req.user.hostel;
+    MealsBill.create(req.body)
+    .then((mealsBill) => {
+        MealsBill.findById(mealsBill._id)
+        .populate('hostel')
+        .then((mealsBill) => {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json(mealsBill)
+        })
     }, (err) => next(err))
     .catch((err) => next(err))
 }) 
 
-mealsBillRouter.route('/:mealsBillId')
+.delete((req, res, next) => {
+    MealsBill.deleteMany({hostel: req.user.hostel})
+    .then((response) => {
+        res.statusCode = 200;
+        res.setHeader('Content-type', 'application/json');
+        res.json(response);
+    }, (err) => next(err))
+}) 
+
+mealsBillRouter.route('/:studentId')
 .get((req, res, next) => {
-    MealsBill.findById(req.params.mealsBillId)
+    MealsBill.find({sid: req.params.studentId})
     .then((mealsBill) => {
         if(mealsBill != null) {
             res.statusCode = 200;
@@ -83,30 +68,20 @@ mealsBillRouter.route('/:mealsBillId')
     .catch(err => next(err));  
 }) 
 .put((req, res, next) => {
-    const user = req.body.username;
-    User.findOne({username: user})
-    .then((user) => {
-        if(user.admin) {
-            MealsBill.findById(req.params.mealsBillId)
-            .then((mealsBill) => {
-                if(mealsBill != null) {
-                    MealsBill.findByIdAndUpdate(req.params.mealsBillId,{ 
-                        $set: req.body
-                    }, { new: true })
-                    .then((newBill) => {
-                        MealsBill.findById(newBill._id)
-                        .then((bill) => {
-                            res.statusCode = 200;
-                            res.setHeader('Content-type', 'application/json');
-                            res.json(bill);
-                        }, err => next(err))
-                    }, err => next(err))
-                }
+    MealsBill.find({sid: req.params.studentId})
+    .then((mealsBill) => {
+        if(mealsBill != null) {
+            MealsBill.findByIdAndUpdate(req.params.mealsBillId,{ 
+                $set: req.body
+            }, { new: true })
+            .then((newBill) => {
+                MealsBill.findById(newBill._id)
+                .then((bill) => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-type', 'application/json');
+                    res.json(bill);
+                }, err => next(err))
             }, err => next(err))
-        } else {
-            const err = new Error("You are not authenticated to perform this operation");
-            err.status = 404;
-            return(next(err));
         }
     }, err => next(err))
     .catch(err => next(err))
@@ -115,22 +90,11 @@ mealsBillRouter.route('/:mealsBillId')
     res.end('Post operation not available')
 })
 .delete((req, res, next) => {
-    const user = req.body.username;
-    User.findOne({username: user})
-    .then((user) => {
-        if(user.admin) {
-            MealsBill.findByIdAndDelete(mealsBillId)
-            .then((response) => {
-                res.statusCode = 200;
-                res.setHeader('Content-type', 'application/json');
-                res.json(response);
-            }, err => next(err))
-        }
-        else {
-            const err = new Error("You are not authorized");
-            err.status = 404;
-            return(next(err));
-        }
+    MealsBill.deleteOne({sid: req.params.sid})
+    .then((response) => {
+        res.statusCode = 200;
+        res.setHeader('Content-type', 'application/json');
+        res.json(response);
     }, err => next(err))
     .catch(err => next(err))
 })

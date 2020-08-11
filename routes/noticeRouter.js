@@ -8,7 +8,7 @@ const Notices = require('../models/notices')
 
 noticeRouter.route('/')
 .get((req, res, next) => {
-    Notices.find({})
+    Notices.find({hostel: req.user.hostel})
     .then((notices) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -17,11 +17,16 @@ noticeRouter.route('/')
     .catch((err) => next(err))
 })
 .post((req, res, next) => {
+    req.body.hostel = req.user.hostel;
     Notices.create(req.body)
     .then((notice) => {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json(notice)
+        Notices.findById(notice._id)
+        .populate('hostel')
+        .then((notice) => {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json(notice)
+        }, err => next(err)) 
     }, (err) => next(err))
     .catch((err) => next(err))
 }) 

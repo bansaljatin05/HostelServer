@@ -42,7 +42,7 @@ const employeeSchema = new Schema({
     },
     hostel: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'Hostels'
     },
     photo: Buffer
 });

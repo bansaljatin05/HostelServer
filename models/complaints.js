@@ -17,6 +17,10 @@ const complaintSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
+    hostel: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Hostels'
+    }
 });
 
 const Complaints = mongoose.model("Complaint", complaintSchema);

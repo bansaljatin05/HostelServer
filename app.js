@@ -6,7 +6,7 @@ var logger = require('morgan');
 const mongoose = require('mongoose')
 const session = require('express-session')
 const FileStore = require('session-file-store')(session);
-
+var passport = require('passport');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var studentRouter = require('./routes/studentRouter');

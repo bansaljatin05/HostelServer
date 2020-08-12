@@ -5,10 +5,6 @@ const complaintSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'User'
     },
-    roomNo: {
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Seat' 
-    },
     title: {
         type: String, 
         required: true 
@@ -16,6 +12,10 @@ const complaintSchema = new mongoose.Schema({
     complaint: {
         type: String, 
         required: true 
+    },
+    resolved: {
+        type: Boolean,
+        default: false
     },
     hostel: {
         type: mongoose.Schema.Types.ObjectId,

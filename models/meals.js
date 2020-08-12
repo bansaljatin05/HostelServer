@@ -5,18 +5,26 @@ const mealSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    time: {
-        type: String,
+    breakfast: {
+        type: Array,
         required: true
     },
-    itemName: {
-        type: String,
+    lunch: {
+        type: Array,
+        required: true
+    },
+    snacks: {
+        type: Array,
+        required: true
+    },
+    dinner: {
+        type: Array,
         required: true
     },
     hostel: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Hostels'
-    },
+    }
 });
 
 const Meals = mongoose.model("Meal", mealSchema);

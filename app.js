@@ -20,7 +20,7 @@ var salaryRouter = require('./routes/salaryRouter');
 var hostelRouter = require('./routes/hostelsRouter');
 var config = require('./config');
 const url = config.mongoUrl;
-const connect = mongoose.connect('mongodb://localhost:27017/hostelDB', {useNewUrlParser: true, useUnifiedTopology: true });
+const connect = mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true });
 connect.then((db) => {
   console.log('Connected correctly to server');
 }, (err) => { console.log(err) });

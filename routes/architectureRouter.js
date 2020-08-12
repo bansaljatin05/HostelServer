@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+var authenticate = require('../authenticate');
 
 const architectureRouter = express.Router();
 architectureRouter.use(bodyParser.json());
@@ -7,7 +8,7 @@ architectureRouter.use(bodyParser.json());
 const Architectures = require('../models/architecture')
 
 architectureRouter.route('/')
-.get((req, res, next) => {
+.get(authenticate.verifyUser, (req, res, next) => {
     Architectures.findOne({hostel: req.user.hostel})
     .populate('hostel')
     .then((architecture) => {
@@ -17,7 +18,7 @@ architectureRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err))
 })
-.post((req, res, next) => {
+.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     req.body.hostel = req.user.hostel;
     Architectures.create(req.body)
     .then((architecture) => {
@@ -31,7 +32,7 @@ architectureRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err))
 }) 
-.put((req, res, next) => {
+.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Dishes.findByIdAndUpdate(architecture, {
         $set: req.body
     }, { new: true })
@@ -42,7 +43,7 @@ architectureRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err));
 }) 
-.delete((req, res, next) => {
+.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end('DELETE operation not supported on /architecture')
 }) 

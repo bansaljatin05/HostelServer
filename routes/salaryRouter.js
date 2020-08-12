@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+var authenticate = require('../authenticate');
 
 const salaryRouter = express.Router();
 salaryRouter.use(bodyParser.json());
@@ -7,7 +8,7 @@ salaryRouter.use(bodyParser.json());
 const Salaries = require('../models/notices')
 
 salaryRouter.route('/')
-.get((req, res, next) => {
+.get(authenticate.verifyUser, (req, res, next) => {
     Salaries.find({hostel: req.user.hostel})
     .populate('hostel')
     .then((salaries) => {
@@ -17,7 +18,7 @@ salaryRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err))
 })
-.post((req, res, next) => {
+.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     req.body.hostel = req.user.hostel;
     Salaries.create(req.body)
     .populate('hostel')
@@ -32,11 +33,11 @@ salaryRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err))
 }) 
-.put((req, res, next) => {
+.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end('PUT operation not supported on /salary');
 }) 
-.delete((req, res, next) => {
+.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end('DELETE opertaion not supported on /salary')
 }) 

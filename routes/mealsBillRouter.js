@@ -4,6 +4,7 @@ const mealsBillRouter = express.Router();
 mealsBillRouter.use(bodyParser.json());
 const MealsBill = require('../models/mealsBill');
 const User = require('../models/user');
+var authenticate = require('../authenticate');
 
 mealsBillRouter.route('/')
 .all((req, res, next) => {
@@ -12,7 +13,7 @@ mealsBillRouter.route('/')
     next();
 })
 
-.get((req, res, next) => {
+.get(authenticate.verifyUser, (req, res, next) => {
     MealsBill.findOne({hostel: req.user.hostel})
     .populate('hostel')
     .then((mealsBill) => {
@@ -23,11 +24,11 @@ mealsBillRouter.route('/')
     .catch(err => next(err))
 }) 
 
-.put((req, res, next) => {
+.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.end('Put request not valid on the /mealsBill end point')
 }) 
 
-.post((req, res, next) => {
+.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     req.body.hostel = req.user.hostel;
     MealsBill.create(req.body)
     .then((mealsBill) => {
@@ -42,7 +43,7 @@ mealsBillRouter.route('/')
     .catch((err) => next(err))
 }) 
 
-.delete((req, res, next) => {
+.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     MealsBill.deleteMany({hostel: req.user.hostel})
     .then((response) => {
         res.statusCode = 200;
@@ -52,7 +53,7 @@ mealsBillRouter.route('/')
 }) 
 
 mealsBillRouter.route('/:studentId')
-.get((req, res, next) => {
+.get(authenticate.verifyUser, (req, res, next) => {
     MealsBill.find({sid: req.params.studentId})
     .then((mealsBill) => {
         if(mealsBill != null) {
@@ -67,7 +68,7 @@ mealsBillRouter.route('/:studentId')
     }, (err) => next(err))
     .catch(err => next(err));  
 }) 
-.put((req, res, next) => {
+.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     MealsBill.find({sid: req.params.studentId})
     .then((mealsBill) => {
         if(mealsBill != null) {
@@ -86,10 +87,10 @@ mealsBillRouter.route('/:studentId')
     }, err => next(err))
     .catch(err => next(err))
 })
-.post((req, res, next) => {
+.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.end('Post operation not available')
 })
-.delete((req, res, next) => {
+.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     MealsBill.deleteOne({sid: req.params.sid})
     .then((response) => {
         res.statusCode = 200;

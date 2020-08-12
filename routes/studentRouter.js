@@ -4,6 +4,8 @@ const studentRouter = express.Router();
 studentRouter.use(bodyParser.json());
 const Students = require('../models/students');
 const User = require('../models/user');
+var authenticate = require('../authenticate');
+
 
 studentRouter.route('/')
 .all((req, res, next) => {
@@ -12,7 +14,7 @@ studentRouter.route('/')
     next();
 })
 
-.get((req, res, next) => {
+.get(authenticate.verifyUser, (req, res, next) => {
     Students.find({hostel: req.user.hostel})
     .populate('hostel')
     .then((students) => {
@@ -26,11 +28,11 @@ studentRouter.route('/')
     .catch(err => next(err))
 }) 
 
-.put((req, res, next) => {
+.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.end('Put request not valid on the /students end point')
 }) 
 
-.post((req, res, next) => {
+.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     req.body.hostel = req.user.hostel;
     Students.create(req.body)
     .then((student) => {
@@ -45,7 +47,7 @@ studentRouter.route('/')
     .catch((err) => next(err))
 }) 
 
-.delete((req, res, next) => {
+.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Students.deleteMany({hostel: req.user.hostel})
     .then((response) => {
         res.statusCode = 200;
@@ -56,7 +58,7 @@ studentRouter.route('/')
 }) 
 
 studentRouter.route('/:studentId')
-.get((req, res, next) => {
+.get(authenticate.verifyUser, (req, res, next) => {
     Students.findById(req.params.studentId)
     .then((student) => {
         if(student != null) {
@@ -71,7 +73,7 @@ studentRouter.route('/:studentId')
     }, (err) => next(err))
     .catch(err => next(err));  
 }) 
-.put((req, res, next) => {
+.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Students.findById(req.params.studentId)
     .then((student) => {
         if(student != null) {
@@ -89,10 +91,10 @@ studentRouter.route('/:studentId')
         }
     }, err => next(err))
 })
-.post((req, res, next) => {
+.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.end('Post operation not available')
 })
-.delete((req, res, next) => {
+.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Students.findByIdAndDelete(studentId)
     .then((response) => {
         res.statusCode = 200;

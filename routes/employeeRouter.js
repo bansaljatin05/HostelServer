@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-
+var authenticate = require('../authenticate');
 const employeeRouter = express.Router();
 employeeRouter.use(bodyParser.json());
 
@@ -8,7 +8,7 @@ const Employees = require('../models/employees');
 const User = require('../models/user');
 
 employeeRouter.route('/')
-.get((req, res, next) => {
+.get(authenticate.verifyUser, (req, res, next) => {
     console.log(req.body);
     Employees.find({hostel: req.user.hostel})
     .populate('hostel')
@@ -19,7 +19,7 @@ employeeRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err))
 }) 
-.post((req, res, next) => {
+.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     req.body.hostel = req.user.hostel;
     Employees.create(req.body)
     .then((employee) => {
@@ -33,11 +33,11 @@ employeeRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err))
 }) 
-.put((req, res, next) => {
+.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end('PUT operation not supported on /employees');
 }) 
-.delete((req, res, next) => {
+.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Employees.deleteMany({hostel: req.user.hostel})
     .then((response) => {
         res.statusCode = 200;
@@ -47,7 +47,7 @@ employeeRouter.route('/')
 }) 
 
 employeeRouter.route('/:employeeId')
-.get((req, res, next) => {
+.get(authenticate.verifyUser, (req, res, next) => {
     Employees.findById(req.params.employeeId)
     .populate('hostel')
     .then((employee) => {
@@ -63,7 +63,7 @@ employeeRouter.route('/:employeeId')
     }, (err) => next(err))
     .catch(err => next(err));  
 }) 
-.put((req, res, next) => {
+.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Employees.findById(req.params.employeeId)
     .then((employee) => {
         if(employee != null) {
@@ -81,10 +81,10 @@ employeeRouter.route('/:employeeId')
         }
     }, err => next(err))
 })
-.post((req, res, next) => {
+.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.end('Post operation not available')
 })
-.delete((req, res, next) => {
+.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Employees.findByIdAndDelete(req.params.employeeId)
     .then((response) => {
         res.statusCode = 200;

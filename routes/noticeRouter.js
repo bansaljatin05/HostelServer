@@ -3,11 +3,12 @@ const bodyParser = require('body-parser');
 
 const noticeRouter = express.Router();
 noticeRouter.use(bodyParser.json());
+var authenticate = require('../authenticate');
 
 const Notices = require('../models/notices')
 
 noticeRouter.route('/')
-.get((req, res, next) => {
+.get(authenticate.verifyUser, (req, res, next) => {
     Notices.find({hostel: req.user.hostel})
     .then((notices) => {
         res.statusCode = 200;
@@ -16,7 +17,7 @@ noticeRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err))
 })
-.post((req, res, next) => {
+.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     req.body.hostel = req.user.hostel;
     Notices.create(req.body)
     .then((notice) => {
@@ -30,11 +31,11 @@ noticeRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err))
 }) 
-.put((req, res, next) => {
+.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end('PUT operation not supported on /notices');
 }) 
-.delete((req, res, next) => {
+.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end('DELETE opertaion not supported on /notices')
 }) 

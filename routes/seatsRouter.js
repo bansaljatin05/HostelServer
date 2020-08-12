@@ -4,6 +4,7 @@ const seatRouter = express.Router();
 seatRouter.use(bodyParser.json());
 const Seat = require('../models/seatAllocation');
 const User = require('../models/user');
+var authenticate = require('../authenticate');
 
 seatRouter.route('/')
 .all((req, res, next) => {
@@ -12,7 +13,7 @@ seatRouter.route('/')
     next();
 })
 
-.get((req, res, next) => {
+.get(authenticate.verifyUser, (req, res, next) => {
     Seat.find({hostel: req.user.hostel})
     .populate('hostel')
     .then((seat) => {
@@ -27,7 +28,7 @@ seatRouter.route('/')
     res.end('Put request not valid on the /seat end point')
 }) 
 
-.post((req, res, next) => {
+.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     req.body.hostel = req.user.hostel;
     Seat.create(req.body)
     .then((seat) => {
@@ -41,7 +42,7 @@ seatRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err))
 }) 
-.delete((req, res, next) => {
+.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Seat.deleteMany({hostel: req.user.hostel})
     .then((response) => {
         res.statusCode = 200;
@@ -51,7 +52,7 @@ seatRouter.route('/')
 })
 
 seatRouter.route('/:seatId')
-.get((req, res, next) => {
+.get(authenticate.verifyUser, (req, res, next) => {
     Seat.findById(req.params.seatId)
     .then((seat) => {
         if(seat != null) {
@@ -66,7 +67,7 @@ seatRouter.route('/:seatId')
     }, (err) => next(err))
     .catch(err => next(err));  
 }) 
-.put((req, res, next) => {
+.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Seat.findById(req.params.seatId)
     .then((seat) => {
         if(seat != null) {
@@ -84,10 +85,10 @@ seatRouter.route('/:seatId')
         }
     }, err => next(err))
 })
-.post((req, res, next) => {
+.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.end('Post operation not available')
 })
-.delete((req, res, next) => {
+.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Seat.findByIdAndDelete(seatId)
     .then((response) => {
         res.statusCode = 200;

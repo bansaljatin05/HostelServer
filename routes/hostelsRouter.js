@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const hostelRouter = express.Router();
 hostelRouter.use(bodyParser.json());
 const Hostels = require('../models/hostels');
+var authenticate = require('../authenticate');
 
 hostelRouter.route('/')
 .all((req, res, next) => {
@@ -11,7 +12,7 @@ hostelRouter.route('/')
     next();
 })
 
-.get((req, res, next) => {
+.get(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Hostels.find({})
     .then((hostels) => {
         res.statusCode = 200;
@@ -21,11 +22,11 @@ hostelRouter.route('/')
     .catch(err => next(err))
 })
 
-.put((req, res, next) => {
+.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.end('Put request not valid on the /hostel end point')
 }) 
 
-.post((req, res, next) => {
+.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Hostels.create(req.body)
     .then((hostels) => {
         res.statusCode = 200;
@@ -34,7 +35,7 @@ hostelRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err))
 }) 
-.delete((req, res, next) => {
+.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Hostels.deleteMany({})
     .then((response) => {
         res.statusCode = 200;

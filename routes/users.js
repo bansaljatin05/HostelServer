@@ -30,7 +30,12 @@ router.post('/signup', (req, res, next) => {
       res.json({err: err});
     }
     else {
-     
+      if(req.body.admin) {
+        user.admin = req.body.admin;
+      }
+      if(req.body.hostel) {
+        user.hostel = req.body.hostel;
+      }
         passport.authenticate('local')(req, res, () => {
           res.statusCode = 200;
           res.setHeader('Content-Type', 'application/json');

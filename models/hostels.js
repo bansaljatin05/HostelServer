@@ -8,6 +8,6 @@ const hostelSchema = {
     }
 }
 
-const Hostels = mongoose.model("Hostel", studentSchema);
+const Hostels = mongoose.model("Hostel", hostelSchema);
 
 module.exports = Hostels;

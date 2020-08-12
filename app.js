@@ -17,8 +17,9 @@ var mealsRouter = require('./routes/mealsRouter');
 var seatsRouter = require('./routes/seatsRouter');
 var salaryRouter = require('./routes/salaryRouter');
 var hostelRouter = require('./routes/hostelsRouter');
-
-const connect = mongoose.connect("mongodb://localhost:27017/hostelDB", {useNewUrlParser: true, useUnifiedTopology: true });
+var config = require('./config');
+const url = config.mongoUrl;
+const connect = mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true });
 connect.then((db) => {
   console.log('Connected correctly to server');
 }, (err) => { console.log(err) });
@@ -32,18 +33,20 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(session({
+/*app.use(session({
   name: 'session-id',
   secret: '12345-67890-09876-54321',
   saveUninitialized: false,
   resave: false,
   store: new FileStore()
-}));
+}));*/
+
+app.use(passport.initialize());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 //app.use(cookieParser());
-function auth (req, res, next) {
+/*function auth (req, res, next) {
   console.log(req.session);
 
   if(!req.session.user) {
@@ -62,7 +65,7 @@ function auth (req, res, next) {
     }
   }
 }
-app.use(auth);
+app.use(auth);*/
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/students', studentRouter);

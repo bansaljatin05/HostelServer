@@ -12,7 +12,7 @@ hostelRouter.route('/')
     next();
 })
 
-.get(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.get((req, res, next) => {
     Hostels.find({})
     .then((hostels) => {
         res.statusCode = 200;
@@ -22,11 +22,11 @@ hostelRouter.route('/')
     .catch(err => next(err))
 })
 
-.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.put((req, res, next) => {
     res.end('Put request not valid on the /hostel end point')
 }) 
 
-.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.post((req, res, next) => {
     Hostels.create(req.body)
     .then((hostels) => {
         res.statusCode = 200;
@@ -35,7 +35,7 @@ hostelRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err))
 }) 
-.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.delete((req, res, next) => {
     Hostels.deleteMany({})
     .then((response) => {
         res.statusCode = 200;

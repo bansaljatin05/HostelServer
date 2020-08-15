@@ -18,7 +18,7 @@ var User = new Schema({
     },
     hostel: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Hostels'
+        ref: 'Hostel'
     },
 });
 User.plugin(passportLocalMongoose);

@@ -15,7 +15,7 @@ const noticeSchema = new mongoose.Schema({
     },
     hostel: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Hostels'
+        ref: 'Hostel'
     },
 });
 

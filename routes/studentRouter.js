@@ -15,15 +15,13 @@ studentRouter.route('/')
 })
 
 .get(authenticate.verifyUser, (req, res, next) => {
+    console.log(req.user.hostel);
     Students.find({hostel: req.user.hostel})
     .populate('hostel')
     .then((students) => {
-        students.find({hostel: req.user.hostel})
-        .then((students) => {
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'application/json')
-            res.json(students);
-        })
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json')
+        res.json(students);
     }, err => next(err))
     .catch(err => next(err))
 }) 

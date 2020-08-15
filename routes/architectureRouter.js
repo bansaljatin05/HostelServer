@@ -33,7 +33,7 @@ architectureRouter.route('/')
     .catch((err) => next(err))
 }) 
 .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    Dishes.findByIdAndUpdate(architecture, {
+    Architectures.findByIdAndUpdate(architecture, {
         $set: req.body
     }, { new: true })
     .then((architecture) => {

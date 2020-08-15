@@ -10,6 +10,7 @@ const Notices = require('../models/notices')
 noticeRouter.route('/')
 .get(authenticate.verifyUser, (req, res, next) => {
     Notices.find({hostel: req.user.hostel})
+    .populate('hostel')
     .then((notices) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -36,8 +37,33 @@ noticeRouter.route('/')
     res.end('PUT operation not supported on /notices');
 }) 
 .delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    res.statusCode = 403;
-    res.end('DELETE opertaion not supported on /notices')
+    Notices.deleteMany({hostel: req.user.hostel})
+    .then((response) => {
+        res.statusCode = 200;
+        res.setHeader('Content-type', 'application/json');
+        res.json(response);
+    }, err => next(err))
 }) 
 
+noticeRouter.route('/:noticeId')
+.get(authenticate.verifyUser, (req, res, next) => {
+    res.statusCode = 403;
+    res.end(`Get operation not supported on /${req.params.noticeId}`);
+})
+.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+    res.statusCode = 403;
+    res.end(`Delete operation not supported on /${req.params.noticeId}`);
+}) 
+.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+    res.statusCode = 403;
+    res.end(`Put operation not supported on /${req.params.noticeId}`);
+}) 
+.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+    Notices.findByIdAndDelete(req.params.noticeId)
+    .then((response) => {
+        res.statusCode = 200;
+        res.setHeader('Content-type', 'application/json');
+        res.json(response);
+    }, err => next(err))
+}) 
 module.exports = noticeRouter;

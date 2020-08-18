@@ -9,14 +9,12 @@ const noticeSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
-    date: {
-        type: Date, 
-        required: true 
-    },
     hostel: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Hostels'
-    },
+        ref: 'Hostel'
+    }
+},{
+    timestamps: true
 });
 
 const Notices = mongoose.model("Notice", noticeSchema);

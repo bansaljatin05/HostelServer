@@ -10,22 +10,20 @@ const cors = require('./cors');
 studentRouter.route('/')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.cors, authenticate.verifyUser, (req, res, next) => {
+    console.log(req.user.hostel)
     Students.find({hostel: req.user.hostel})
     .populate('hostel')
     .then((students) => {
-        students.find({hostel: req.user.hostel})
-        .then((students) => {
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'application/json')
-            res.json(students);
-        })
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json')
+        res.json(students);
     }, err => next(err))
     .catch(err => next(err))
-}) 
+})
 
 .put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.end('Put request not valid on the /students end point')
-}) 
+})
 
 .post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     req.body.hostel = req.user.hostel;
@@ -40,7 +38,7 @@ studentRouter.route('/')
         }, err => next(err))
     }, (err) => next(err))
     .catch((err) => next(err))
-}) 
+})
 
 .delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Students.deleteMany({hostel: req.user.hostel})
@@ -50,7 +48,7 @@ studentRouter.route('/')
         res.json(response);
     }, (err) => next(err))
     .catch((err) => next(err))
-}) 
+})
 
 studentRouter.route('/:studentId')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
@@ -67,13 +65,13 @@ studentRouter.route('/:studentId')
             return(next(err));
         }
     }, (err) => next(err))
-    .catch(err => next(err));  
-}) 
+    .catch(err => next(err));
+})
 .put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Students.findById(req.params.studentId)
     .then((student) => {
         if(student != null) {
-            Students.findByIdAndUpdate(req.params.studentId,{ 
+            Students.findByIdAndUpdate(req.params.studentId,{
                 $set: req.body
             }, { new: true })
             .then((newStudent) => {
@@ -100,4 +98,3 @@ studentRouter.route('/:studentId')
 })
 
 module.exports = studentRouter;
-

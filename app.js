@@ -46,6 +46,7 @@ app.use(passport.initialize());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/hostels', hostelRouter);
 //app.use(cookieParser());
 /*function auth (req, res, next) {
   console.log(req.session);

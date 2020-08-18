@@ -22,18 +22,15 @@ const studentSchema = new Schema({
     },
     email: {
         type: String, 
-        unique: true, 
         required: true 
     },
     branch: {
         type: String,
-        unique: true,
         required: true
     },
     nationality: {
         type: String,
         required: true,
-        unique: true
     },
     address:{
         type: String,
@@ -48,8 +45,7 @@ const studentSchema = new Schema({
         required: true 
     },
     fatherMobile: {
-        type: String, 
-        unique: true, 
+        type: String,  
         required: true 
     },
     dob: {
@@ -66,7 +62,7 @@ const studentSchema = new Schema({
     },
     hostel: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Hostels'
+        ref: 'Hostel'
     },
 });
 

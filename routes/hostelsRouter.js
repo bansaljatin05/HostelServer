@@ -20,7 +20,7 @@ hostelRouter.route('/')
 
 .put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.end('Put request not valid on the /hostel end point')
-}) 
+})
 
 .post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Hostels.create(req.body)
@@ -30,7 +30,7 @@ hostelRouter.route('/')
         res.json(hostels);
     }, (err) => next(err))
     .catch((err) => next(err))
-}) 
+})
 .delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Hostels.deleteMany({})
     .then((response) => {

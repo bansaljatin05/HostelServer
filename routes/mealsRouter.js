@@ -28,7 +28,7 @@ mealsRouter.route('/')
     Meals.create(req.body)
     .then((meals) => {
         Meals.findById(meals._id)
-        .populate(hostel)
+        .populate('hostel')
         .then((meals) => {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json')

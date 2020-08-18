@@ -30,12 +30,12 @@ architectureRouter.route('/')
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json(architecture)
-        }, err => next(err))  
+        }, err => next(err))
     }, (err) => next(err))
     .catch((err) => next(err))
-}) 
+})
 .put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    Dishes.findByIdAndUpdate(architecture, {
+    Architectures.findByIdAndUpdate(architecture, {
         $set: req.body
     }, { new: true })
     .then((architecture) => {
@@ -44,10 +44,10 @@ architectureRouter.route('/')
         res.json(architecture);
     }, (err) => next(err))
     .catch((err) => next(err));
-}) 
+})
 .delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end('DELETE operation not supported on /architecture')
-}) 
+})
 
 module.exports = architectureRouter;

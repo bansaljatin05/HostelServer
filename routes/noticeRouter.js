@@ -48,19 +48,20 @@ noticeRouter.route('/')
 })
 
 noticeRouter.route('/:noticeId')
-.get(authenticate.verifyUser, (req, res, next) => {
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+.get(cors.cors, authenticate.verifyUser, (req, res, next) => {
     res.statusCode = 403;
     res.end(`Get operation not supported on /${req.params.noticeId}`);
 })
-.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end(`Delete operation not supported on /${req.params.noticeId}`);
 })
-.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end(`Put operation not supported on /${req.params.noticeId}`);
 })
-.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Notices.findByIdAndDelete(req.params.noticeId)
     .then((response) => {
         res.statusCode = 200;

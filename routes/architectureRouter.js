@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 var authenticate = require('../authenticate');
+const cors = require('./cors');
 
 const architectureRouter = express.Router();
 architectureRouter.use(bodyParser.json());
@@ -8,7 +9,8 @@ architectureRouter.use(bodyParser.json());
 const Architectures = require('../models/architecture')
 
 architectureRouter.route('/')
-.get(authenticate.verifyUser, (req, res, next) => {
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+.get(cors.cors, authenticate.verifyUser, (req, res, next) => {
     Architectures.findOne({hostel: req.user.hostel})
     .populate('hostel')
     .then((architecture) => {
@@ -18,7 +20,7 @@ architectureRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err))
 })
-.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     req.body.hostel = req.user.hostel;
     Architectures.create(req.body)
     .then((architecture) => {
@@ -32,7 +34,7 @@ architectureRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err))
 }) 
-.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Dishes.findByIdAndUpdate(architecture, {
         $set: req.body
     }, { new: true })
@@ -43,7 +45,7 @@ architectureRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err));
 }) 
-.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end('DELETE operation not supported on /architecture')
 }) 

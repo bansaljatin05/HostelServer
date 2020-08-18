@@ -4,15 +4,11 @@ const hostelRouter = express.Router();
 hostelRouter.use(bodyParser.json());
 const Hostels = require('../models/hostels');
 var authenticate = require('../authenticate');
+const cors = require('./cors');
 
 hostelRouter.route('/')
-.all((req, res, next) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    next();
-})
-
-.get(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+.get(cors.cors, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Hostels.find({})
     .then((hostels) => {
         res.statusCode = 200;
@@ -22,11 +18,11 @@ hostelRouter.route('/')
     .catch(err => next(err))
 })
 
-.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.end('Put request not valid on the /hostel end point')
 }) 
 
-.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Hostels.create(req.body)
     .then((hostels) => {
         res.statusCode = 200;
@@ -35,7 +31,7 @@ hostelRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err))
 }) 
-.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Hostels.deleteMany({})
     .then((response) => {
         res.statusCode = 200;

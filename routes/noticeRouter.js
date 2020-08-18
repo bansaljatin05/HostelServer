@@ -4,11 +4,13 @@ const bodyParser = require('body-parser');
 const noticeRouter = express.Router();
 noticeRouter.use(bodyParser.json());
 var authenticate = require('../authenticate');
+const cors = require('./cors');
 
 const Notices = require('../models/notices')
 
 noticeRouter.route('/')
-.get(authenticate.verifyUser, (req, res, next) => {
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+.get(cors.cors, authenticate.verifyUser, (req, res, next) => {
     Notices.find({hostel: req.user.hostel})
     .then((notices) => {
         res.statusCode = 200;
@@ -17,7 +19,7 @@ noticeRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err))
 })
-.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     req.body.hostel = req.user.hostel;
     Notices.create(req.body)
     .then((notice) => {
@@ -31,11 +33,11 @@ noticeRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err))
 }) 
-.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end('PUT operation not supported on /notices');
 }) 
-.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end('DELETE opertaion not supported on /notices')
 }) 

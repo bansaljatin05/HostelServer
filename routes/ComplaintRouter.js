@@ -4,15 +4,11 @@ const complaintRouter = express.Router();
 complaintRouter.use(bodyParser.json());
 const Complaints = require('../models/complaints');
 var authenticate = require('../authenticate');
+const cors = require('./cors');
 
 complaintRouter.route('/')
-.all((req, res, next) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    next();
-})
-
-.get(authenticate.verifyUser, (req, res, next) => {
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+.get(cors.cors, authenticate.verifyUser, (req, res, next) => {
     Complaints.find({hostel: req.user.hostel})
     .populate('studentName')
     .populate('hostel')
@@ -24,11 +20,11 @@ complaintRouter.route('/')
     .catch(err => next(err))
 })
 
-.put(authenticate.verifyUser, auhtenticate.verifyAdmin,(req, res, next) => {
+.put(cors.corsWithOptions, authenticate.verifyUser, auhtenticate.verifyAdmin,(req, res, next) => {
     res.end('Put request not valid on the /hostel end point')
 }) 
 
-.post(authenticate.verifyUser, (req, res, next) => {
+.post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     req.body.studentName = req.user._id;
     req.body.hostel = req.user.hostel;
     Complaints.create(req.body)
@@ -44,7 +40,7 @@ complaintRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err))
 }) 
-.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Complaints.deleteMany({hostel: req.user.hostel})
     .then((response) => {
         res.statusCode = 200;
@@ -53,7 +49,9 @@ complaintRouter.route('/')
     }, (err) => next(err))
 })
 
-complaintRouter.put(':/complaintId', authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+complaintRouter.route(':/complaintId')
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+.put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Complaints.findById(req.params.complaintId)
     .then((complaint) => {
         if(complaint != null) {

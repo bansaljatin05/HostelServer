@@ -5,15 +5,11 @@ mealsRouter.use(bodyParser.json());
 const Meals = require('../models/meals');
 const User = require('../models/user');
 var authenticate = require('../authenticate');
+const cors = require('./cors');
 
 mealsRouter.route('/')
-.all((req, res, next) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    next();
-})
-
-.get(authenticate.verifyUser, (req, res, next) => {
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+.get(cors.cors, authenticate.verifyUser, (req, res, next) => {
     Meals.findOne({hostel: req.user.hostel})
     .then((meals) => {
         res.statusCode = 200;
@@ -23,11 +19,11 @@ mealsRouter.route('/')
     .catch(err => next(err))
 })
 
-.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.end('Put request not valid on the /meals end point')
 }) 
 
-.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     req.body.hostel = req.user.hostel;
     Meals.create(req.body)
     .then((meals) => {
@@ -41,7 +37,7 @@ mealsRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err))
 }) 
-.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Meals.deleteMany({hostel: req.user.hostel})
     .then((response) => {
         res.statusCode = 200;

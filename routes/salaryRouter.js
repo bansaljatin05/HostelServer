@@ -4,11 +4,13 @@ var authenticate = require('../authenticate');
 
 const salaryRouter = express.Router();
 salaryRouter.use(bodyParser.json());
+const cors = require('./cors');
 
 const Salaries = require('../models/notices')
 
 salaryRouter.route('/')
-.get(authenticate.verifyUser, (req, res, next) => {
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+.get(cors.cors, authenticate.verifyUser, (req, res, next) => {
     Salaries.find({hostel: req.user.hostel})
     .populate('hostel')
     .then((salaries) => {
@@ -18,7 +20,7 @@ salaryRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err))
 })
-.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     req.body.hostel = req.user.hostel;
     Salaries.create(req.body)
     .populate('hostel')
@@ -33,17 +35,18 @@ salaryRouter.route('/')
     }, (err) => next(err))
     .catch((err) => next(err))
 }) 
-.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end('PUT operation not supported on /salary');
 }) 
-.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end('DELETE opertaion not supported on /salary')
 }) 
 
 salaryRouter.route('/:salaryId')
-.get((req, res, next) => {
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+.get(cors.cors, (req, res, next) => {
     Salaries.findById(req.params.salaryId)
     .populate('hostel')
     .then((salary) => {
@@ -59,7 +62,7 @@ salaryRouter.route('/:salaryId')
     }, (err) => next(err))
     .catch(err => next(err));  
 }) 
-.put((req, res, next) => {
+.put(cors.corsWithOptions, (req, res, next) => {
     Salaries.findById(req.params.salaryId)
     .then((salary) => {
         if(salary != null) {
@@ -77,10 +80,10 @@ salaryRouter.route('/:salaryId')
         }
     }, err => next(err))
 })
-.post((req, res, next) => {
+.post(cors.corsWithOptions, (req, res, next) => {
     res.end('Post operation not available')
 })
-.delete((req, res, next) => {
+.delete(cors.corsWithOptions, (req, res, next) => {
     Salaries.findByIdAndDelete(req.params.salaryId)
     .then((response) => {
         res.statusCode = 200;

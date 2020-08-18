@@ -5,16 +5,11 @@ studentRouter.use(bodyParser.json());
 const Students = require('../models/students');
 const User = require('../models/user');
 var authenticate = require('../authenticate');
-
+const cors = require('./cors');
 
 studentRouter.route('/')
-.all((req, res, next) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    next();
-})
-
-.get(authenticate.verifyUser, (req, res, next) => {
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+.get(cors.cors, authenticate.verifyUser, (req, res, next) => {
     Students.find({hostel: req.user.hostel})
     .populate('hostel')
     .then((students) => {
@@ -28,11 +23,11 @@ studentRouter.route('/')
     .catch(err => next(err))
 }) 
 
-.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.end('Put request not valid on the /students end point')
 }) 
 
-.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     req.body.hostel = req.user.hostel;
     Students.create(req.body)
     .then((student) => {
@@ -47,7 +42,7 @@ studentRouter.route('/')
     .catch((err) => next(err))
 }) 
 
-.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Students.deleteMany({hostel: req.user.hostel})
     .then((response) => {
         res.statusCode = 200;
@@ -58,7 +53,8 @@ studentRouter.route('/')
 }) 
 
 studentRouter.route('/:studentId')
-.get(authenticate.verifyUser, (req, res, next) => {
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+.get(cors.cors, authenticate.verifyUser, (req, res, next) => {
     Students.findById(req.params.studentId)
     .then((student) => {
         if(student != null) {
@@ -73,7 +69,7 @@ studentRouter.route('/:studentId')
     }, (err) => next(err))
     .catch(err => next(err));  
 }) 
-.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Students.findById(req.params.studentId)
     .then((student) => {
         if(student != null) {
@@ -91,10 +87,10 @@ studentRouter.route('/:studentId')
         }
     }, err => next(err))
 })
-.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.end('Post operation not available')
 })
-.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Students.findByIdAndDelete(studentId)
     .then((response) => {
         res.statusCode = 200;

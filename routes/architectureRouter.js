@@ -35,7 +35,7 @@ architectureRouter.route('/')
     .catch((err) => next(err))
 })
 .put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    Architectures.findByIdAndUpdate(architecture, {
+    Architectures.findOneAndUpdate({}, {
         $set: req.body
     }, { new: true })
     .then((architecture) => {

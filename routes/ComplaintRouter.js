@@ -20,7 +20,7 @@ complaintRouter.route('/')
     .catch(err => next(err))
 })
 
-.put(cors.corsWithOptions, authenticate.verifyUser, auhtenticate.verifyAdmin,(req, res, next) => {
+.put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin,(req, res, next) => {
     res.end('Put request not valid on the /hostel end point')
 }) 
 
@@ -70,5 +70,5 @@ complaintRouter.route(':/complaintId')
     }, err => next(err))
 })
 
-module.exports = hostelRouter;
+module.exports = complaintRouter;
 

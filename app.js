@@ -19,6 +19,8 @@ var salaryRouter = require('./routes/salaryRouter');
 var hostelRouter = require('./routes/hostelsRouter');
 var uploadRouter = require('./routes/uploadRouter');
 var config = require('./config');
+const complaintRouter = require('./routes/ComplaintRouter');
+const mealsBillRouter = require('./routes/mealsBillRouter');
 const url = config.mongoUrl;
 const connect = mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true });
 connect.then((db) => {
@@ -79,6 +81,8 @@ app.use('/seats', seatsRouter);
 app.use('/salary', salaryRouter);
 app.use('/hostels', hostelRouter);
 app.use('/imageUpload', uploadRouter);
+app.use('/mealBills', mealsBillRouter);
+app.use('/complaints', complaintRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

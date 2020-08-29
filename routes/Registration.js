@@ -16,6 +16,7 @@ function myFunction() {
                 password: results[i].DOB, 
                 username: results[i].Sid,
                 hostel: '5f37923011855135682d1ae8' // Hostel id of hostel for which the list is..
+                                                   // Replace it everytime you want to add list of different hostel         
             })
             .then((res) => {
                 console.log(`Status: ${res.status}`);

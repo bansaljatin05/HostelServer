@@ -10,7 +10,7 @@ const cors = require('./cors');
 mealsBillRouter.route('/')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.cors, authenticate.verifyUser, (req, res, next) => {
-    MealsBill.findOne({hostel: req.user.hostel})
+    MealsBill.find({hostel: req.user.hostel})
     .populate('hostel')
     .then((mealsBill) => {
         res.statusCode = 200;

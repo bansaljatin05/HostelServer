@@ -11,7 +11,7 @@ const Architectures = require('../models/architecture')
 architectureRouter.route('/')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.cors, authenticate.verifyUser, (req, res, next) => {
-    Architectures.findOne({hostel: req.user.hostel})
+    Architectures.find({hostel: req.user.hostel})
     .populate('hostel')
     .then((architecture) => {
         res.statusCode = 200;

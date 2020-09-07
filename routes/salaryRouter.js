@@ -6,12 +6,12 @@ const salaryRouter = express.Router();
 salaryRouter.use(bodyParser.json());
 const cors = require('./cors');
 
-const Salaries = require('../models/notices')
+const Salary = require('../models/salary')
 
 salaryRouter.route('/')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.cors, authenticate.verifyUser, (req, res, next) => {
-    Salaries.find({hostel: req.user.hostel})
+    Salary.find({hostel: req.user.hostel})
     .populate('hostel')
     .then((salaries) => {
         res.statusCode = 200;
@@ -22,10 +22,9 @@ salaryRouter.route('/')
 })
 .post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     req.body.hostel = req.user.hostel;
-    Salaries.create(req.body)
-    .populate('hostel')
+    Salary.create(req.body)
     .then((salary) => {
-        Salaries.findById(salary._id)
+        Salary.findById(salary._id)
         .populate('hostel')
         .then((employee) => {
             res.statusCode = 200;
@@ -47,7 +46,7 @@ salaryRouter.route('/')
 salaryRouter.route('/:salaryId')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.cors, (req, res, next) => {
-    Salaries.findById(req.params.salaryId)
+    Salary.findById(req.params.salaryId)
     .populate('hostel')
     .then((salary) => {
         if(salary != null) {
@@ -63,14 +62,14 @@ salaryRouter.route('/:salaryId')
     .catch(err => next(err));  
 }) 
 .put(cors.corsWithOptions, (req, res, next) => {
-    Salaries.findById(req.params.salaryId)
+    Salary.findById(req.params.salaryId)
     .then((salary) => {
         if(salary != null) {
-            Salaries.findByIdAndUpdate(req.params.salaryId, { 
+            Salary.findByIdAndUpdate(req.params.salaryId, { 
                 $set: req.body
             }, { new: true })
             .then((newSalary) => {
-                Salaries.findById(newSalary._id)
+                Salary.findById(newSalary._id)
                 .then((sal) => {
                     res.statusCode = 200;
                     res.setHeader('Content-type', 'application/json');
@@ -84,7 +83,7 @@ salaryRouter.route('/:salaryId')
     res.end('Post operation not available')
 })
 .delete(cors.corsWithOptions, (req, res, next) => {
-    Salaries.findByIdAndDelete(req.params.salaryId)
+    Salary.findByIdAndDelete(req.params.salaryId)
     .then((response) => {
         res.statusCode = 200;
         res.setHeader('Content-type', 'application/json');

@@ -16,6 +16,10 @@ const studentSchema = new Schema({
         unique: true, 
         required: true 
     },
+    dob: {
+        type: Date,
+        required: true
+    },
     gender: {
         type: String,
         required: true
@@ -48,18 +52,14 @@ const studentSchema = new Schema({
         type: String,  
         required: true 
     },
-    dob: {
+    /*photo: {
         type: String,
         required: true
-    },
-    photo: {
+    },*/
+    /*roomNo: {
         type: String,
         required: true
-    },
-    roomNo: {
-        type: String,
-        required: true
-    },
+    },*/
     hostel: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Hostel'

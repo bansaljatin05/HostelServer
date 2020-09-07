@@ -39,7 +39,14 @@ const employeeSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Hostel'
     },
-    photo: Buffer
+    /*photo: {
+        type: String, 
+        required: true 
+    },*/
+    eid: {
+        type: String, 
+        required: true 
+    },
 });
 
 const Employees = mongoose.model("Employee", employeeSchema);

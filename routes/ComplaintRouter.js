@@ -49,7 +49,7 @@ complaintRouter.route('/')
     }, (err) => next(err))
 })
 
-complaintRouter.route(':/complaintId')
+complaintRouter.route('/:complaintId')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Complaints.findById(req.params.complaintId)
@@ -68,6 +68,16 @@ complaintRouter.route(':/complaintId')
             }, err => next(err))
         }
     }, err => next(err))
+})
+
+.delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+    Complaints.findByIdAndDelete(req.params.complaintId)
+    .then((response) => {
+        res.statusCode = 200;
+        res.setHeader('Content-type', 'application/json');
+        res.json(response);
+    }, err => next(err))
+    .catch(err => next(err))
 })
 
 module.exports = complaintRouter;

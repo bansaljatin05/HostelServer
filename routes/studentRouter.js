@@ -89,7 +89,7 @@ studentRouter.route('/:studentId')
     res.end('Post operation not available')
 })
 .delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    Students.findByIdAndDelete(studentId)
+    Students.findByIdAndDelete(req.params.studentId)
     .then((response) => {
         res.statusCode = 200;
         res.setHeader('Content-type', 'application/json');

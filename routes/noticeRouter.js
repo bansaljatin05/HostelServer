@@ -55,7 +55,7 @@ noticeRouter.route('/:noticeId')
 })
 .post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
-    res.end(`Delete operation not supported on /${req.params.noticeId}`);
+    res.end(`Post operation not supported on /${req.params.noticeId}`);
 })
 .put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
@@ -68,5 +68,6 @@ noticeRouter.route('/:noticeId')
         res.setHeader('Content-type', 'application/json');
         res.json(response);
     }, err => next(err))
+    .catch(err => next(err))
 })
 module.exports = noticeRouter;

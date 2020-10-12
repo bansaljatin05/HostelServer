@@ -13,8 +13,6 @@ const noticeSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Hostel'
     }
-},{
-    timestamps: true
 });
 
 const Notices = mongoose.model("Notice", noticeSchema);

@@ -71,6 +71,7 @@ studentRouter.route('/:studentId')
     Students.findById(req.params.studentId)
     .then((student) => {
         if(student != null) {
+            console.log('heyylo');
             Students.findByIdAndUpdate(req.params.studentId,{
                 $set: req.body
             }, { new: true })

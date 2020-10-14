@@ -66,10 +66,10 @@ mealsBillRouter.route('/:studentId')
     .catch(err => next(err));  
 }) 
 .put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    MealsBill.find({sid: req.params.studentId})
+    MealsBill.findById(req.params.studentId)
     .then((mealsBill) => {
         if(mealsBill != null) {
-            MealsBill.findByIdAndUpdate(req.params.mealsBillId,{ 
+            MealsBill.findByIdAndUpdate(req.params.studentId,{ 
                 $set: req.body
             }, { new: true })
             .then((newBill) => {

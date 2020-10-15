@@ -48,10 +48,10 @@ mealsBillRouter.route('/')
     }, (err) => next(err))
 }) 
 
-mealsBillRouter.route('/:studentId')
+mealsBillRouter.route('/:billId')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.cors, authenticate.verifyUser, (req, res, next) => {
-    MealsBill.find({sid: req.params.studentId})
+    MealsBill.findById(req.params.billId)
     .then((mealsBill) => {
         if(mealsBill != null) {
             res.statusCode = 200;
@@ -88,7 +88,7 @@ mealsBillRouter.route('/:studentId')
     res.end('Post operation not available')
 })
 .delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-    MealsBill.deleteOne({sid: req.params.sid})
+    MealsBill.findByIdAndDelete(req.params.billId)
     .then((response) => {
         res.statusCode = 200;
         res.setHeader('Content-type', 'application/json');

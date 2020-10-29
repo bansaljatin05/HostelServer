@@ -68,11 +68,11 @@ seatRouter.route('/:seatId')
     Seat.findById(req.params.seatId)
     .then((seat) => {
         if(seat != null) {
-            seat.findByIdAndUpdate(req.params.seatId,{ 
+            Seat.findByIdAndUpdate(req.params.seatId,{ 
                 $set: req.body
             }, { new: true })
             .then((newseat) => {
-                seat.findById(newseat._id)
+                Seat.findById(newseat._id)
                 .then((se) => {
                     res.statusCode = 200;
                     res.setHeader('Content-type', 'application/json');

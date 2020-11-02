@@ -45,7 +45,7 @@ salaryRouter.route('/')
 
 salaryRouter.route('/:salaryId')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
-.get(cors.cors, (req, res, next) => {
+.get(cors.cors, authenticate.verifyUser, (req, res, next) => {
     Salary.findById(req.params.salaryId)
     .populate('hostel')
     .then((salary) => {
@@ -61,7 +61,7 @@ salaryRouter.route('/:salaryId')
     }, (err) => next(err))
     .catch(err => next(err));  
 }) 
-.put(cors.corsWithOptions, (req, res, next) => {
+.put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Salary.findById(req.params.salaryId)
     .then((salary) => {
         if(salary != null) {
@@ -79,10 +79,10 @@ salaryRouter.route('/:salaryId')
         }
     }, err => next(err))
 })
-.post(cors.corsWithOptions, (req, res, next) => {
+.post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.end('Post operation not available')
 })
-.delete(cors.corsWithOptions, (req, res, next) => {
+.delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Salary.findByIdAndDelete(req.params.salaryId)
     .then((response) => {
         res.statusCode = 200;

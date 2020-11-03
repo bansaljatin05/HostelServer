@@ -22,7 +22,7 @@ hostelRouter.route('/')
     res.end('Put request not valid on the /hostel end point')
 })
 
-.post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.post(cors.corsWithOptions, (req, res, next) => {
     Hostels.create(req.body)
     .then((hostels) => {
         res.statusCode = 200;

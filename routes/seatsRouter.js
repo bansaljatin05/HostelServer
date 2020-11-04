@@ -86,7 +86,7 @@ seatRouter.route('/:seatId')
         res.end('Post operation not available')
     })
     .delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
-        Seat.findByIdAndDelete(seatId)
+        Seat.findByIdAndDelete(req.params.seatId)
             .then((response) => {
                 res.statusCode = 200;
                 res.setHeader('Content-type', 'application/json');

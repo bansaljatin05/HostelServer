@@ -49,7 +49,7 @@ mealsRouter.route('/')
 mealsRouter.route('/:mealId')
     .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
     .get(cors.cors, authenticate.verifyUser, (req, res, next) => {
-        MealsBill.findById(req.params.mealId)
+        Meals.findById(req.params.mealId)
         .then((meal) => {
             if (meal != null) {
                 res.statusCode = 200;
@@ -70,14 +70,14 @@ mealsRouter.route('/:mealId')
                 Meals.findByIdAndUpdate(req.params.mealId, {
                     $set: req.body
                 }, { new: true })
-                    .then((newMeal) => {
-                        Meals.findById(newMeal._id)
-                            .then((meal) => {
-                                res.statusCode = 200;
-                                res.setHeader('Content-type', 'application/json');
-                                res.json(meal);
-                            }, err => next(err))
+                .then((newMeal) => {
+                    Meals.findById(newMeal._id)
+                    .then((meal) => {
+                        res.statusCode = 200;
+                        res.setHeader('Content-type', 'application/json');
+                        res.json(meal);
                     }, err => next(err))
+                }, err => next(err))
             }
         }, err => next(err))
         .catch(err => next(err))

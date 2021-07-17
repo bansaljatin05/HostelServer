@@ -72,14 +72,14 @@ mealsBillRouter.route('/:billId')
                     MealsBill.findByIdAndUpdate(req.params.billId, {
                         $set: req.body
                     }, { new: true })
-                        .then((newBill) => {
-                            MealsBill.findById(newBill._id)
-                                .then((bill) => {
-                                    res.statusCode = 200;
-                                    res.setHeader('Content-type', 'application/json');
-                                    res.json(bill);
-                                }, err => next(err))
+                    .then((newBill) => {
+                    MealsBill.findById(newBill._id)
+                        .then((bill) => {
+                            res.statusCode = 200;
+                            res.setHeader('Content-type', 'application/json');
+                            res.json(bill);
                         }, err => next(err))
+                    }, err => next(err))
                 }
             }, err => next(err))
             .catch(err => next(err))
